@@ -39,6 +39,12 @@ namespace Pokladna
    return data;
   }
 
+  public List<PokladniZaznam> NactiMesic(int rok, int mesic)
+  {
+   //List<PokladniZaznam> data = NactiVse();
+   return NactiVse().FindAll(prvek => prvek.Datum.Year == rok && prvek.Datum.Month == mesic);   
+  }
+
   public PokladniZaznam NactiZaznam(int idPokladniZaznam)
   {
    throw new NotImplementedException();
@@ -58,5 +64,7 @@ namespace Pokladna
   {
    throw new NotImplementedException();
   }
+
+  
  }
 }

@@ -24,14 +24,33 @@ namespace Pokladna
   {
    JsonRepos jsonRepos = new JsonRepos("data.json");
    jsonRepos.VytvorTestData();
-   repositar = jsonRepos; 
-   
+   repositar = jsonRepos;
+
+   cBoxRok.SelectedIndex = cBoxRok.Items.IndexOf(DateTime.Now.Year.ToString());
+   cBoxMesic.SelectedIndex = DateTime.Now.Month-1;
+
+
+
+
    //repositar = new SqlRepos();
    //repositar = new XmlRepos();
-   pokladna = repositar.NactiVse();
-   foreach (var p in pokladna)
+   //pokladna = repositar.NactiVse();
+   //foreach (var p in pokladna)
+   //{
+   // lvData.Items.Add(p.DoLvItem());
+   //}
+  }
+
+  private void cBoxRok_SelectedIndexChanged(object sender, EventArgs e)
+  {
+   if (cBoxRok.SelectedIndex >= 0 && cBoxMesic.SelectedIndex >= 0)
    {
-    lvData.Items.Add(p.DoLvItem());
+    pokladna = repositar.NactiMesic(int.Parse(cBoxRok.SelectedItem.ToString()), cBoxMesic.SelectedIndex + 1);
+    lvData.Items.Clear();
+    foreach (var p in pokladna)
+    {
+     lvData.Items.Add(p.DoLvItem());
+    }
    }
   }
  }
