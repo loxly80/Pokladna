@@ -24,7 +24,9 @@ namespace Pokladna
   {
    JsonRepos jsonRepos = new JsonRepos("data.json");
    //jsonRepos.VytvorTestData();
-   repositar = jsonRepos;
+   SqlRepos sqlRepos = new SqlRepos();
+   //sqlRepos.VytvorTestData(jsonRepos.NactiVse());
+   repositar = sqlRepos;
 
    cBoxRok.SelectedIndex = cBoxRok.Items.IndexOf(DateTime.Now.Year.ToString());
    cBoxMesic.SelectedIndex = DateTime.Now.Month - 1;
