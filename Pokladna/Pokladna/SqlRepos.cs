@@ -10,9 +10,10 @@ namespace Pokladna
  public class SqlRepos : IRepos
  {
   private string connString = "Data Source=titanic.vassboskovice.cz;" +
-                              "Initial Catalog=Hla_pokladna;" +
-                              "Integrated Security=True;" +
-                              "Connect Timeout=30;" +
+                              "Initial Catalog = Hla_pokladna; " +
+                              "User ID = sa; " +
+                              "Password=********;" +
+                              "Connect Timeout = 30; " +
                               "Encrypt=False;" +
                               "TrustServerCertificate=False;" +
                               "ApplicationIntent=ReadWrite;" +
@@ -126,7 +127,8 @@ namespace Pokladna
    using (SqlConnection sqlConnection = new SqlConnection(connString))
    {
     string dotaz = $"insert into PokladniZaznamy(Cislo    ,Datum    ,Popis      ,Castka    ,Zustatek    ,Poznamka    ) " +
-                                        $"values({z.Cislo},'{z.Datum.ToString("yyyyMMdd")}','{z.Popis}',{z.Castka},{z.Zustatek},'{z.Poznamka}')";
+                                        $"values({z.Cislo},'{z.Datum.ToString("yyyyMMdd")}','{z.Popis}',{z.Castka},{z.Zustatek},'{z.Poznamka}') \r\n" +
+                   $"exec dbo.spOpravaZaznamu";
     using (SqlCommand sqlCommand = new SqlCommand(dotaz, sqlConnection))
     {
      sqlConnection.Open();
