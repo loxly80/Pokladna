@@ -39,7 +39,7 @@ namespace Pokladna
    return data;
   }
 
-  public List<PokladniZaznam> NactiMesic(int rok, int mesic)
+  public List<PokladniZaznam> NactiMesic(int rok, int mesic, string sloupecTrideni, bool sestupne)
   {
    List<PokladniZaznam> data = NactiVse();
    data = NactiVse().FindAll(prvek => prvek.Datum.Year == rok && prvek.Datum.Month == mesic);

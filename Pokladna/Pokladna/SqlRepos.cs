@@ -12,7 +12,7 @@ namespace Pokladna
   private string connString = "Data Source=titanic.vassboskovice.cz;" +
                               "Initial Catalog = Hla_pokladna; " +
                               "User ID = sa; " +
-                              "Password=********;" +
+                              "Password=Agent007; " +
                               "Connect Timeout = 30; " +
                               "Encrypt=False;" +
                               "TrustServerCertificate=False;" +
@@ -50,12 +50,12 @@ namespace Pokladna
    }
   }
 
-  public List<PokladniZaznam> NactiMesic(int rok, int mesic)
+  public List<PokladniZaznam> NactiMesic(int rok, int mesic, string sloupecTrideni, bool sestupne)
   {
    List<PokladniZaznam> result = new List<PokladniZaznam>();
    using (SqlConnection sqlConnection = new SqlConnection(connString))
    {
-    string dotaz = $"select * from PokladniZaznamy where YEAR(Datum)={rok} and MONTH(Datum)={mesic} order by Datum";
+    string dotaz = $"select * from PokladniZaznamy where YEAR(Datum)={rok} and MONTH(Datum)={mesic} order by {sloupecTrideni} {(sestupne ? " desc" : "")}";
     using (SqlCommand sqlCommand = new SqlCommand(dotaz, sqlConnection))
     {
      sqlConnection.Open();
@@ -112,12 +112,36 @@ namespace Pokladna
 
   public void SmazZaznam(PokladniZaznam pokladniZaznam)
   {
-   throw new NotImplementedException();
+   using (SqlConnection sqlConnection = new SqlConnection(connString))
+   {
+    string dotaz = $"delete from PokladniZaznamy where IdPokladniZaznam={pokladniZaznam.IdPokladniZaznam}";
+                   
+    using (SqlCommand sqlCommand = new SqlCommand(dotaz, sqlConnection))
+    {
+     sqlConnection.Open();
+     sqlCommand.ExecuteNonQuery();
+     sqlConnection.Close();
+    }
+   }
   }
 
   public void UpravZaznam(PokladniZaznam pokladniZaznam)
   {
-   throw new NotImplementedException();
+   using (SqlConnection sqlConnection = new SqlConnection(connString))
+   {
+    string dotaz = $"update PokladniZaznamy set " +
+                     $" Datum='{pokladniZaznam.Datum.ToString("yyyyMMdd")}'," +
+                     $" Popis='{pokladniZaznam.Popis}'," +
+                     $" Castka={pokladniZaznam.Castka}," +
+                     $" Poznamka='{pokladniZaznam.Poznamka}' " +
+                   $" where IdPokladniZaznam={pokladniZaznam.IdPokladniZaznam}";
+    using (SqlCommand sqlCommand = new SqlCommand(dotaz, sqlConnection))
+    {
+     sqlConnection.Open();
+     sqlCommand.ExecuteNonQuery();
+     sqlConnection.Close();
+    }
+   }
   }
 
   public PokladniZaznam VytvorZaznam(PokladniZaznam pokladniZaznam)
@@ -127,8 +151,7 @@ namespace Pokladna
    using (SqlConnection sqlConnection = new SqlConnection(connString))
    {
     string dotaz = $"insert into PokladniZaznamy(Cislo    ,Datum    ,Popis      ,Castka    ,Zustatek    ,Poznamka    ) " +
-                                        $"values({z.Cislo},'{z.Datum.ToString("yyyyMMdd")}','{z.Popis}',{z.Castka},{z.Zustatek},'{z.Poznamka}') \r\n" +
-                   $"exec dbo.spOpravaZaznamu";
+                                        $"values({z.Cislo},'{z.Datum.ToString("yyyyMMdd")}','{z.Popis}',{z.Castka},{z.Zustatek},'{z.Poznamka}')";
     using (SqlCommand sqlCommand = new SqlCommand(dotaz, sqlConnection))
     {
      sqlConnection.Open();

@@ -8,7 +8,7 @@ namespace Pokladna
 {
  public class XmlRepos : IRepos
  {
-  public List<PokladniZaznam> NactiMesic(int rok, int mesic)
+  public List<PokladniZaznam> NactiMesic(int rok, int mesic, string sloupecTrideni, bool sestupne)
   {
    throw new NotImplementedException();
   }

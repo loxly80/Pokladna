@@ -14,6 +14,7 @@ namespace Pokladna
  {
   List<PokladniZaznam> pokladna;
   IRepos repositar;
+  PokladniZaznam vybranyZaznam;
 
   public Form1()
   {
@@ -73,9 +74,88 @@ namespace Pokladna
                                                 , txtPoznamka.Text);
    repositar.VytvorZaznam(novyZaznam);
    NactiDataAktMesic();
+   ResetujFormular();
+  }
+
+  private void lvData_DoubleClick(object sender, EventArgs e)
+  {
+   VyberZaznam();
+  }
+
+  private void btnUlozit_Click(object sender, EventArgs e)
+  {
+   vybranyZaznam.Datum = dtpDatum.Value;
+   vybranyZaznam.Popis = txtPopis.Text;
+   vybranyZaznam.Castka = Convert.ToDouble(numCastka.Value);
+   vybranyZaznam.Poznamka = txtPoznamka.Text;
+   repositar.UpravZaznam(vybranyZaznam);
+   NactiDataAktMesic();
+   ResetujFormular();
+  }
+
+  private void ResetujFormular()
+  {
    txtPopis.Text = "";
    numCastka.Value = 0;
    txtPoznamka.Text = "";
+   txtCisloDokladu.Text = "";
+   dtpDatum.Value = DateTime.Now;
+  }
+
+  private void VyberZaznam()
+  {
+   if (lvData.SelectedIndices.Count > 0)
+   {
+    int vybranyIndex = lvData.SelectedIndices[0];
+    vybranyZaznam = pokladna[vybranyIndex];
+    dtpDatum.Value = vybranyZaznam.Datum;
+    txtCisloDokladu.Text = vybranyZaznam.Cislo.ToString();
+    txtPopis.Text = vybranyZaznam.Popis;
+    numCastka.Value = Convert.ToDecimal(vybranyZaznam.Castka);
+    txtPoznamka.Text = vybranyZaznam.Poznamka;
+   }
+  }
+
+  private void lvData_KeyUp(object sender, KeyEventArgs e)
+  {
+   switch (e.KeyCode)
+   {
+    case Keys.Enter:
+     VyberZaznam();
+     break;
+    case Keys.Delete:
+     if (lvData.SelectedIndices.Count > 0)
+     {
+      int vybranyIndex = lvData.SelectedIndices[0];
+      vybranyZaznam = pokladna[vybranyIndex];
+      if (MessageBox.Show("Opravdu chcete smazat vybranou položku", "Mazání položky", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+      {
+       repositar.SmazZaznam(vybranyZaznam);
+       NactiDataAktMesic();
+       ResetujFormular();
+      }      
+     }
+     break;
+   }
+  }
+
+  private void cboxTridit_SelectedIndexChanged(object sender, EventArgs e)
+  {
+   SetriditPokladnu();
+  }
+
+  private void chboxSestupne_CheckedChanged(object sender, EventArgs e)
+  {
+   SetriditPokladnu();
+  }
+
+  private void SetriditPokladnu()
+  {
+   string[] sloupce = new string[] { "Datum","Popis","Castka","Castka" }; 
+   string sloupec = sloupce[cboxTridit.SelectedIndex];
+   string smer = chboxSestupne.Checked ? "desc" : "asc";
+   
+
   }
  }
 }

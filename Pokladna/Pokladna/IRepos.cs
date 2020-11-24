@@ -9,7 +9,7 @@ namespace Pokladna
  public interface IRepos
  {
   List<PokladniZaznam> NactiVse();
-  List<PokladniZaznam> NactiMesic(int rok, int mesic);
+  List<PokladniZaznam> NactiMesic(int rok, int mesic, string sloupecTrideni, bool sestupne);
   PokladniZaznam NactiZaznam(int idPokladniZaznam);
   PokladniZaznam VytvorZaznam(PokladniZaznam pokladniZaznam);
   void UpravZaznam(PokladniZaznam pokladniZaznam);
